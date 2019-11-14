@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
-<mapper namespace="com.tol.sai.SaiMapper">
+<mapper namespace="com.tol.sai.mappers.subwayMapper">
  
-    <select id="selectNow" resultType="String">
-        SELECT NOW()
+    <select id="searchLocation" resultType="subwayVO">
+        SELECT WGSX, WGSY FROM SUBWAY WHERE STATIONNAME
     </select>
     
 </mapper>
