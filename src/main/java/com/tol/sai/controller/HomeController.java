@@ -59,7 +59,11 @@ public class HomeController {
  
         logger.info("home");
         
-        List<SubwayVO> subwayList = subwayService.searchLocation();
+        String str = "´öÁ¤";
+        
+        List<SubwayVO> subwayList = subwayService.searchLocation(str);
+        
+        System.out.println(subwayList.get(0).getWgsX());
         
         model.addAttribute("subwayList", subwayList);
  
