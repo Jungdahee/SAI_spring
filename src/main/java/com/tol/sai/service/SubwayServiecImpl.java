@@ -16,9 +16,9 @@ public class SubwayServiecImpl implements SubwayService{
 	private SubwayDAO dao;
 
 	@Override
-	public List<SubwayVO> searchLocation() throws Exception {
+	public List<SubwayVO> searchLocation(String stationName) throws Exception {
 		// TODO Auto-generated method stub
-		return dao.searchLocation();
+		return dao.searchLocation(stationName);
 	}
 	
 }

@@ -7,6 +7,6 @@ import com.tol.sai.dto.SubwayVO;
 
 public interface SubwayService {
 	
-	public List<SubwayVO> searchLocation() throws Exception;
+	public List<SubwayVO> searchLocation(String stationName) throws Exception;
 
 }
