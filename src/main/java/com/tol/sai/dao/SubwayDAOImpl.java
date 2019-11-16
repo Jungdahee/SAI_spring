@@ -16,9 +16,9 @@ public class SubwayDAOImpl implements SubwayDAO{
     private static final String Namespace = "com.tol.sai.mappers.subwayMapper";
 
 	@Override
-	public List<SubwayVO> searchLocation() throws Exception {
+	public List<SubwayVO> searchLocation(String stationName) throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		return sqlSession.selectList(Namespace + ".searchLocation", stationName);
 	}
 
 }
