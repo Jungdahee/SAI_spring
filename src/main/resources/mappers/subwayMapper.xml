@@ -3,8 +3,8 @@
  
 <mapper namespace="com.tol.sai.mappers.subwayMapper">
  
-    <select id="searchLocation" resultType="subwayVO">
-        SELECT WGSX, WGSY FROM SUBWAY WHERE STATIONNAME
+    <select id ="searchLocation" resultType ="subwayVO">
+        SELECT WGSX, WGSY FROM SUBWAY WHERE STATIONNAME = #{stationName}
     </select>
     
 </mapper>
