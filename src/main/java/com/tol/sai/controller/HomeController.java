@@ -3,11 +3,6 @@ package com.tol.sai.controller;
 import java.util.*;
 import javax.inject.Inject;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -34,6 +29,9 @@ public class HomeController {
 	
 	@Autowired
     BasicDataSource dataSource;
+	
+	@Inject
+    private SubwayService subwayService;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -48,26 +46,26 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "home";
+		return "index.jsp";
 	}
 	
-	@Inject
-    private SubwayService subwayService;
-
-	@RequestMapping(value = "/searchLocation.do", method = RequestMethod.GET)
-    public String searchLocation(Locale locale, Model model) throws Exception{
- 
-        logger.info("home");
-        
-        String str = "덕정";
-        
-        List<SubwayVO> subwayList = subwayService.searchLocation(str);
-        
-        System.out.println(subwayList.get(0).getWgsX());
-        
-        model.addAttribute("subwayList", subwayList);
- 
-        return null;
-    }
+	//중간 지점 계산 메소드
+	@RequestMapping(value = "/searchCentricPoing.do", method = RequestMethod.GET)
+	public String searchCentricPoint(String people[], Model model) throws Exception {
+		
+		//subwayInfoList -> 선택한 사용자의 stationName, mapX, mapY
+		List<SubwayVO> subwayInfoList = subwayService.searchLocation(people);
+		
+		//centricLocation -> 무게 중심 좌표의 mapX, mapY
+		String centricLocation[] = subwayService.calculateLocation(subwayInfoList);
+		
+		//subwayList -> 인근역 10개의 stationName
+		String subwayList[] = subwayService.searchTenSubway(centricLocation);
+		
+		//lastSub -> 최종 추천 StationName
+		String lastSubway = subwayService.calculateLastSubway(people, subwayList);
+	
+		return "middlePage.jsp";
+	}
 	
 }
