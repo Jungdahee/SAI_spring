@@ -50,7 +50,7 @@ public class HomeController {
 	}
 	
 	//중간 지점 계산 메소드
-	@RequestMapping(value = "/searchCentricPoing.do", method = RequestMethod.GET)
+	@RequestMapping(value = "/searchCentricPoint.do", method = RequestMethod.GET)
 	public String searchCentricPoint(String people[], Model model) throws Exception {
 		
 		//subwayInfoList -> 선택한 사용자의 stationName, mapX, mapY
