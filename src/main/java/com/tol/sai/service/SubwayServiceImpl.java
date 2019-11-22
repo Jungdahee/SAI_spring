@@ -138,6 +138,52 @@ public class SubwayServiceImpl implements SubwayService{
 	@Override
 	public String[] searchTenSubway(String[] centricLocation) throws Exception {
 		// TODO Auto-generated method stub
+		
+		String locURL = "http://swopenapi.seoul.go.kr/api/subway/5947735178616c77393747474d664c/xml/nearBy/0/10/" + mapX + "/" + mapY;
+
+		DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactoty.newDocumentBuilder();
+		Document doc = dBuilder.parse(locURL);
+
+		doc.getDocumentElement().normalize();
+
+		NodeList nList = doc.getElementsByTagName("row");
+
+		for(int i = 0; i < nList.getLength(); i++){
+			Node nNode = nList.item(i);
+			if(nNode.getNodeType() == Node.ELEMENT_NODE){
+
+				Element eElement = (Element) nNode;
+
+				NodeList statnNm = eElement.getElementsByTagName("statnNm").item(0).getChildNodes();
+				Node statnNmInfo = (Node) statnNm.item(0);
+				String state = statnNmInfo.getNodeValue();
+
+				NodeList subwayNm = eElement.getElementsByTagName("subwayNm").item(0).getChildNodes();
+				Node subwayNmInfo = (Node) subwayNm.item(0);
+				String subway = subwayNmInfo.getNodeValue();
+
+				NodeList subwayXcnts = eElement.getElementsByTagName("subwayXcnts").item(0).getChildNodes();
+				Node subwayXcntsInfo = (Node) subwayXcnts.item(0);
+				String subwayX = subwayXcntsInfo.getNodeValue();
+
+				NodeList subwayYcnts = eElement.getElementsByTagName("subwayYcnts").item(0).getChildNodes();
+				Node subwayYcntsInfo = (Node) subwayYcnts.item(0);
+				String subwayY = subwayYcntsInfo.getNodeValue();
+
+				statName[i] = state;
+			}
+			
+			System.out.println("statName" + i + " : " + statName[i]);
+		}
+
+		lastSub = ChooseLastSub.getTotalTime();
+		
+		System.out.println("##-----SearchTenSub -  lastSub = ChooseLastSub.getTotalTime();:  " + lastSub);
+		
+		result = SearchLastSubPath.findPath(lastSub);
+		
+		System.out.println("##-----SearchTenSub result(=path)  " + result.toJSONString());
 		return null;
 	}
 	
