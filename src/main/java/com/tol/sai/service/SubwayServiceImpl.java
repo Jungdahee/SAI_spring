@@ -7,9 +7,12 @@ import java.util.*;
 
 import javax.inject.Inject;
 import javax.net.ssl.HttpsURLConnection;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.springframework.stereotype.Service;
- 
+import org.w3c.dom.*;
+
 import com.tol.sai.dao.SubwayDAO;
 import com.tol.sai.dto.SubwayVO;
 
@@ -139,6 +142,8 @@ public class SubwayServiceImpl implements SubwayService{
 	public String[] searchTenSubway(String[] centricLocation) throws Exception {
 		// TODO Auto-generated method stub
 		
+		String subwayList[] = new String[10];
+		
 		String locURL = "http://swopenapi.seoul.go.kr/api/subway/5947735178616c77393747474d664c/xml/nearBy/0/10/" + mapX + "/" + mapY;
 
 		DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
@@ -171,26 +176,101 @@ public class SubwayServiceImpl implements SubwayService{
 				Node subwayYcntsInfo = (Node) subwayYcnts.item(0);
 				String subwayY = subwayYcntsInfo.getNodeValue();
 
-				statName[i] = state;
+				subwayList[i] = state;
 			}
 			
-			System.out.println("statName" + i + " : " + statName[i]);
+			System.out.println("subwayList" + i + " : " + subwayList[i]);
 		}
 
-		lastSub = ChooseLastSub.getTotalTime();
-		
-		System.out.println("##-----SearchTenSub -  lastSub = ChooseLastSub.getTotalTime();:  " + lastSub);
-		
-		result = SearchLastSubPath.findPath(lastSub);
-		
-		System.out.println("##-----SearchTenSub result(=path)  " + result.toJSONString());
-		return null;
+		return subwayList;
 	}
 	
 
 	@Override
 	public String calculateLastSubway(String[] people, String[] subwayList) throws Exception {
 		// TODO Auto-generated method stub
+		System.out.println("SearchMiddlePoint->SearchTenSub -> ChooseLastSub ");
+		
+		double sum = 0.0, avg = 0.0, var = 0.0, std = 0.0, time = 0.0;
+		double totalTime[] = new double[10];
+		double sevTime[] = new double[SearchMiddlePoint.friends.size()];
+		double totalSd[] = new double[10];
+		double total[] = new double[10];
+		HashMap result = new HashMap();
+
+		for(int i = 0; i < SearchTenSub.statName.length; i++) {
+			System.out.println("SearchTenSub.statName  ****" + SearchTenSub.statName[i]);
+			for(int j = 0; j < SearchMiddlePoint.friends.size(); j++) {
+				System.out.println("SearchTenSub.friends " + SearchMiddlePoint.friends.get(j));
+
+				try {			
+					String url = "http://swopenapi.seoul.go.kr/api/subway/sample/xml/shortestRoute/0/1/";
+					String fURL = URLEncoder.encode(SearchMiddlePoint.friends.get(j), "UTF-8");
+					String sURL = URLEncoder.encode(SearchTenSub.statName[i], "UTF-8");
+					String shortURL = url + fURL + "/" + sURL;
+
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder builder = factory.newDocumentBuilder();
+					Document document = builder.parse(shortURL);
+
+					document.getDocumentElement().normalize();
+
+					NodeList shortList = document.getElementsByTagName("row");
+					
+					
+					Node nNode = shortList.item(0);
+					
+					if(nNode.getNodeType() == Node.ELEMENT_NODE){
+
+						Element eElement = (Element) nNode;
+
+						NodeList shtTravelTm = eElement.getElementsByTagName("shtTravelTm").item(0).getChildNodes();
+						Node shtTravelInfo = (Node) shtTravelTm.item(0);
+						String shtTime = shtTravelInfo.getNodeValue();
+
+						time = Double.parseDouble(shtTime);
+						totalTime[i] += time;
+					} 
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
+				sevTime[j] = time;
+			}
+
+			//역마다의 평균 시간 계산
+			avg = totalTime[i] / SearchMiddlePoint.friends.size();
+			System.out.println("역마다의 평균 시간 : " + avg);
+
+			sum = 0; 
+			for(int l = 0; l < SearchMiddlePoint.friends.size(); l++) {
+				sum += Math.pow(sevTime[l] - avg, 2.0);
+			}
+			
+			//표준 편차를 구하기 위한 계산
+			var = sum / SearchMiddlePoint.friends.size();
+
+			//표준 편차 계산
+			std = Math.sqrt(var);
+			totalSd[i] = std;
+			
+			System.out.println("표준 편차 : " + std);
+			
+			//역마다의 표준 편차와 총 소요시간 계산 -> 공평성을 위한 변수들
+			total[i] = totalSd[i] + totalTime[i];
+			
+			result.put(total[i], SearchTenSub.statName[i]);
+		}	
+		
+		//표준 편차와 소요시간을 더한 값 오름차순으로 정렬
+		Arrays.sort(total);
+		
+		//정렬 후 가장 짧은 시간 선택
+		lastSub = (String)result.get(total[0]);
+		System.out.println("최종역:: " + lastSub);
+		
+		//중간지점 반환(String)
+		return lastSub;
 		return null;
 	}
 	
