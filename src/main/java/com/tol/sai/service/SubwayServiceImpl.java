@@ -198,15 +198,15 @@ public class SubwayServiceImpl implements SubwayService{
 		double total[] = new double[10];
 		HashMap result = new HashMap();
 
-		for(int i = 0; i < SearchTenSub.statName.length; i++) {
-			System.out.println("SearchTenSub.statName  ****" + SearchTenSub.statName[i]);
+		for(int i = 0; i < subwayList.length; i++) {
+			System.out.println("SearchTenSub.statName  ****" + subwayList);
 			for(int j = 0; j < SearchMiddlePoint.friends.size(); j++) {
 				System.out.println("SearchTenSub.friends " + SearchMiddlePoint.friends.get(j));
 
 				try {			
 					String url = "http://swopenapi.seoul.go.kr/api/subway/sample/xml/shortestRoute/0/1/";
 					String fURL = URLEncoder.encode(SearchMiddlePoint.friends.get(j), "UTF-8");
-					String sURL = URLEncoder.encode(SearchTenSub.statName[i], "UTF-8");
+					String sURL = URLEncoder.encode(subwayList[i], "UTF-8");
 					String shortURL = url + fURL + "/" + sURL;
 
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -259,7 +259,7 @@ public class SubwayServiceImpl implements SubwayService{
 			//역마다의 표준 편차와 총 소요시간 계산 -> 공평성을 위한 변수들
 			total[i] = totalSd[i] + totalTime[i];
 			
-			result.put(total[i], SearchTenSub.statName[i]);
+			result.put(total[i], subwayList[i]);
 		}	
 		
 		//표준 편차와 소요시간을 더한 값 오름차순으로 정렬
@@ -271,7 +271,6 @@ public class SubwayServiceImpl implements SubwayService{
 		
 		//중간지점 반환(String)
 		return lastSub;
-		return null;
 	}
 	
 }
