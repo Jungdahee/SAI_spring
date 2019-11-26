@@ -3,6 +3,7 @@ package com.tol.sai.service;
 import java.awt.geom.Point2D;
 import java.io.*;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 
 import javax.inject.Inject;
@@ -197,6 +198,8 @@ public class SubwayServiceImpl implements SubwayService{
 		double totalSd[] = new double[10];
 		double total[] = new double[10];
 		HashMap result = new HashMap();
+		
+		String lastSub = "";
 
 		for(int i = 0; i < subwayList.length; i++) {
 			System.out.println("SearchTenSub.statName  ****" + subwayList);
