@@ -194,7 +194,7 @@ public class SubwayServiceImpl implements SubwayService{
 		
 		double sum = 0.0, avg = 0.0, var = 0.0, std = 0.0, time = 0.0;
 		double totalTime[] = new double[10];
-		double sevTime[] = new double[SearchMiddlePoint.friends.size()];
+		double sevTime[] = new double[people.length];
 		double totalSd[] = new double[10];
 		double total[] = new double[10];
 		HashMap result = new HashMap();
@@ -203,12 +203,12 @@ public class SubwayServiceImpl implements SubwayService{
 
 		for(int i = 0; i < subwayList.length; i++) {
 			System.out.println("SearchTenSub.statName  ****" + subwayList);
-			for(int j = 0; j < SearchMiddlePoint.friends.size(); j++) {
-				System.out.println("SearchTenSub.friends " + SearchMiddlePoint.friends.get(j));
+			for(int j = 0; j < people.length; j++) {
+				System.out.println("SearchTenSub.friends " + people[i]);
 
 				try {			
 					String url = "http://swopenapi.seoul.go.kr/api/subway/sample/xml/shortestRoute/0/1/";
-					String fURL = URLEncoder.encode(SearchMiddlePoint.friends.get(j), "UTF-8");
+					String fURL = URLEncoder.encode(people[i], "UTF-8");
 					String sURL = URLEncoder.encode(subwayList[i], "UTF-8");
 					String shortURL = url + fURL + "/" + sURL;
 
@@ -242,16 +242,16 @@ public class SubwayServiceImpl implements SubwayService{
 			}
 
 			//역마다의 평균 시간 계산
-			avg = totalTime[i] / SearchMiddlePoint.friends.size();
+			avg = totalTime[i] / people.length;
 			System.out.println("역마다의 평균 시간 : " + avg);
 
 			sum = 0; 
-			for(int l = 0; l < SearchMiddlePoint.friends.size(); l++) {
+			for(int l = 0; l < people.length; l++) {
 				sum += Math.pow(sevTime[l] - avg, 2.0);
 			}
 			
 			//표준 편차를 구하기 위한 계산
-			var = sum / SearchMiddlePoint.friends.size();
+			var = sum / people.length;
 
 			//표준 편차 계산
 			std = Math.sqrt(var);
