@@ -24,7 +24,7 @@ public class SubwayServiceImpl implements SubwayService{
 	private SubwayDAO dao;
 
 	@Override
-	public List<SubwayVO> searchLocation(String stationName) throws Exception {
+	public List<SubwayVO> searchLocation(String[] stationName) throws Exception {
 		// TODO Auto-generated method stub
 		return dao.searchLocation(stationName);
 	}
@@ -270,7 +270,7 @@ public class SubwayServiceImpl implements SubwayService{
 		
 		//정렬 후 가장 짧은 시간 선택
 		lastSub = (String)result.get(total[0]);
-		System.out.println("최종역:: " + lastSub);
+		System.out.println("최종 추천역:: " + lastSub);
 		
 		//중간지점 반환(String)
 		return lastSub;
