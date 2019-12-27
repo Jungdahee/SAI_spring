@@ -8,7 +8,6 @@
 
 ## 개발 환경
 * Spring Framework
-* Java
 * Mapbox API
 * 공공데이터 포탈 API
 * 카카오 좌표 변환 API
