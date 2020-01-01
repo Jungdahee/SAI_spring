@@ -11,7 +11,7 @@
 * Mapbox API
 * 공공데이터 포탈 API
 * 카카오 좌표 변환 API
-* server - ubuntu
+* Server - ubuntu
 
 ## 기능 목록
 * 중간 지점의 지하철 역 검색
